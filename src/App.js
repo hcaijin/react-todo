@@ -1,37 +1,17 @@
 import React, { Component } from 'react';
 import Todo from './component/Todo';
-import addicon from './static/add_icon.svg';
-import ReactSVG from 'react-svg';
+import Header from './component/Header';
+
 
 class App extends Component {
     state = {
-       todoList: [
-            { id: 1,
-              title: "task1",
-              isCompleted: false
-            },
-            { id: 2,
-              title: "task2",
-              isCompleted: true
-            },
-            { id: 3,
-              title: "task3",
-              isCompleted: true
-            }
-        ]
+       todoList: []
     }
 
-    addTodo = (itemv) => {
-        if (itemv) {
-            let todoCounter = Math.floor(Math.random() * 9000) + 1000
-            let itemObj = {
-                id: todoCounter,
-                title: itemv,
-                isCompleted: false
-            }
-            this.state.todoList.unshift(itemObj)
-            this.setState({todoList: this.state.todoList})
-        }
+    componentDidMount() {
+        const jsonTodoList = JSON.parse(localStorage.getItem('todo'))
+        // console.log(jsonTodoList)
+        this.setState({todoList: jsonTodoList || []})
     }
 
     handleDel = (id) => {
@@ -40,6 +20,7 @@ class App extends Component {
             return task.id !== id
         })
         // console.log(todoList)
+        this.fnSave(todoList)
         this.setState({todoList})
     }
 
@@ -51,30 +32,39 @@ class App extends Component {
                 break
             }
         }
-        console.log(todoList)
+        // console.log(todoList)
+        this.fnSave(todoList)
         this.setState({todoList})
     }
 
-    addTodoBykeyUp = (e) => {
-        // console.log(e.keyCode)
-        if (e.keyCode === 13) {
-            this.addTodo(document.getElementById("item").value.trim())
+    handleAddTodo = (task) => {
+        if (task) {
+            let todoCounter = Math.floor(Math.random() * 9000) + 1000
+            let itemObj = {
+                id: todoCounter,
+                title: task,
+                isCompleted: false
+            }
+            this.state.todoList.unshift(itemObj)
+            this.fnSave(this.state.todoList)
+            this.setState({todoList: this.state.todoList})
         }
     }
 
-    addTodoByClick = () => {
-        this.addTodo(document.getElementById("item").value.trim())
+    /**
+     * save to localStorage
+     */
+    fnSave = (todo) => {
+        let jTodo = JSON.stringify(todo)
+        localStorage.setItem('todo', jTodo)
     }
 
     render() {
         return (
                 <div>
-                    <header>
-                        <input onKeyUp={this.addTodoBykeyUp} type="text" placeholder="Enter an activity.." id="item"></input>
-                        <button onClick={this.addTodoByClick} >
-                            <ReactSVG src={addicon} />
-                        </button>
-                    </header>
+                    <Header
+                        handleAddTodo={this.handleAddTodo} />
+
                     <Todo
                         comTodo={this.handleToggle}
                         delTodo={this.handleDel}

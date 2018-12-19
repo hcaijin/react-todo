@@ -1,7 +1,5 @@
 import React, {Component} from 'react'
-import deleteicon from '../static/remove_icon.svg'
-import doneicon from '../static/done_icon.svg'
-import ReactSVG from 'react-svg';
+import {DelIcon, CompletedIcon} from './SvgIcon';
 
 class TodoList extends Component {
 
@@ -21,10 +19,10 @@ class TodoList extends Component {
                     {this.props.value}
                     <div className="buttons">
                     <button className="remove" onClick={this.delTodo}>
-                        <ReactSVG src={deleteicon} />
+                        <DelIcon />
                     </button>
                     <button className="complete" onClick={this.comTodo}>
-                        <ReactSVG src={doneicon} />
+                        <CompletedIcon />
                     </button>
                     </div>
                 </li>
